@@ -1,2 +1,14 @@
-packages/*
-*~
+# Don’t commit the following directories created by pub.
+build/
+packages/
+
+# Or the files created by dart2js.
+*.dart.js
+*.dart.precompiled.js
+*.js_
+*.js.deps
+*.js.map
+
+# Include when developing application packages.
+pubspec.lock
+>>>>>>> 00b9d9e1303ccb060f9d21b9ca3a8e6677dc27b4
