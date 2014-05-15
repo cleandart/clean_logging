@@ -1,4 +1,5 @@
-import 'package:logging/logging.dart';
+library clean_logging.logger;
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -14,6 +15,12 @@ String logToJson(Map log) => JSON.encode(log,
     });
 
 class Logger {
+  static final String INFO = 'info';
+  static final String WARNING = 'warning';
+  static final String FINE = 'fine';
+  static final String FINER = 'finer';
+  static final String FINEST = 'finest';
+
   var source;
   Function getMetaData;
   StreamController streamController;
@@ -21,9 +28,10 @@ class Logger {
   Logger(source, {Map this.getMetaData()}) {
     streamController = new StreamController();
   }
-  log(Level level, String event, {dynamic data, error, stackTrace}) {
+  log(String level, String event, {dynamic data, error, stackTrace}) {
     streamController.add({
       'level':level,
+      'source':source,
       'event':event,
       'meta':getMetaData(),
       'timestamp': new DateTime.now().millisecondsSinceEpoch,

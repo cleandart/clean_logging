@@ -1,3 +1,5 @@
+library clean_logging.client_handlers;
+
 import 'package:clean_logging/logger.dart';
 import 'dart:async';
 import 'dart:html';
