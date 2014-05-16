@@ -1,5 +1,5 @@
 import 'package:clean_logging/logger.dart';
-import 'package:clean_logging/server_logger.dart';
+import 'package:clean_logging/post_handler.dart';
 
 main() {
 

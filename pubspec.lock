@@ -25,10 +25,6 @@ packages:
     description: clean_router
     source: hosted
     version: "0.3.3"
-  clean_sync:
-    description: clean_sync
-    source: hosted
-    version: "0.4.11"
   collection:
     description: collection
     source: hosted
@@ -65,11 +61,3 @@ packages:
     description: path
     source: hosted
     version: "1.1.0"
-  quiver:
-    description: quiver
-    source: hosted
-    version: "0.18.2"
-  useful:
-    description: useful
-    source: hosted
-    version: "1.0.5"
