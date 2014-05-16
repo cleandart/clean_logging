@@ -11,7 +11,7 @@ class ClientRequestHandler {
   Function send;
   Function encode;
 
-  _sendToUrlFactory(url) {
+  static _sendToUrlFactory(url) {
     HttpClient client = new HttpClient();
     return (String data) {
       client.postUrl(Uri.parse(url)).then((request) {
@@ -19,6 +19,7 @@ class ClientRequestHandler {
           request.close();
       });
     };
+  }
 
   ClientRequestHandler(url) : this.config(logToJson, _sendToUrlFactory(url));
 
