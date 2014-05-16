@@ -10,17 +10,15 @@ class PrintHandler {
 
 class AjaxHandler {
 
-  Function send;
-  Function encode;
+  final Function send;
+  final Function encode;
 
-  _sendToUrlFactory(url) =>
+  static _sendToUrlFactory(url) =>
       (String data) =>
         HttpRequest.request(url, method:'POST', sendData: data);
 
-  AjaxHandler(url) {
-    send = _sendToUrlFactory(url);
-    encode = logToJson;
-  }
+  AjaxHandler(url) : this.config(logToJson, _sendToUrlFactory(url));
+
   AjaxHandler.config(String this.encode(Map), Future this.send(String));
 
   handleData(data) => send(encode(data));

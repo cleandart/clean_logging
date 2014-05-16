@@ -11,7 +11,8 @@ main() {
 
   Logger logger = new Logger('logger1', getMetaData: getMetaData);
   String connectionString = "mongodb://0.0.0.0:27017/logger";
-  MongoLogger mongoLogger = new MongoLogger.bind("127.0.0.1", 8080, connectionString);
-  return mongoLogger.init.then((_) => print("Initialized"));
+  MongoLogger mongoLogger;
+  MongoLogger.bind("127.0.0.1", 8080, connectionString)
+    .then((mL) => mongoLogger = mL).then((_) => print('Mongo Logger initialized'));
 
 }

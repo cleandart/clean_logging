@@ -15,25 +15,39 @@ String logToJson(Map log) => JSON.encode(log,
     });
 
 class Logger {
-  static final String INFO = 'info';
-  static final String WARNING = 'warning';
-  static final String FINE = 'fine';
-  static final String FINER = 'finer';
-  static final String FINEST = 'finest';
 
-  var source;
+  static const int FINEST = 300;
+  static const int FINER = 400;
+  static const int FINE = 500;
+  static const int CONFIG = 700;
+  static const int INFO = 800;
+  static const int WARNING = 900;
+  static const int SEVERE = 1000;
+  static const int SHOUT = 1200;
+
+  Function info, warning, severe, shout, config, fine, finer, finest;
+
+  final source;
   Function getMetaData;
-  StreamController streamController;
+  static StreamController _streamController = new StreamController.broadcast();
 
-  Logger(source, {Map this.getMetaData()}) {
-    streamController = new StreamController();
+  Logger(this.source, {Map this.getMetaData()}) {
+    info = _logByLevel(INFO);
+    warning = _logByLevel(WARNING);
+    severe = _logByLevel(SEVERE);
+    shout = _logByLevel(SHOUT);
+    config = _logByLevel(CONFIG);
+    fine = _logByLevel(FINE);
+    finer = _logByLevel(FINER);
+    finest = _logByLevel(FINEST);
   }
-  log(String level, String event, {dynamic data, error, stackTrace}) {
-    streamController.add({
+
+  log(int level, String event, {dynamic data, error, stackTrace}) {
+    _streamController.add({
       'level':level,
       'source':source,
       'event':event,
-      'meta':getMetaData(),
+      'meta':getMetaData != null ? getMetaData() : null,
       'timestamp': new DateTime.now().millisecondsSinceEpoch,
       'data':data,
       'error':error,
@@ -41,10 +55,13 @@ class Logger {
     });
   }
 
+  _logByLevel(int level) => (String event, {dynamic data, error, stackTrace})
+      => log(level, event, data:data, error:error, stackTrace:stackTrace);
+
   /**
    * {
    *   'level':, 'source':, 'event':, 'meta': , 'timestamp':, 'data':, 'error':, 'stackTrace':
    * }
    */
-  Stream<Map> get onRecord => streamController.stream;
+  static Stream<Map> get onRecord => _streamController.stream;
 }
