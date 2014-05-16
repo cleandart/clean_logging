@@ -59,7 +59,7 @@ class MongoLogger {
                 request.response.close();
               },
               onError: (e) {
-                request.response.statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+                request.response.statusCode = HttpStatus.BAD_REQUEST;
                 request.response.write({"error":"$e"});
                 request.response.close();
               });
