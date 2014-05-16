@@ -11,21 +11,16 @@ class ClientRequestHandler {
   Function send;
   Function encode;
 
-  _sendToUrlFactory(url) =>
-    (String data) {
-      HttpClient client = new HttpClient();
+  _sendToUrlFactory(url) {
+    HttpClient client = new HttpClient();
+    return (String data) {
       client.postUrl(Uri.parse(url)).then((request) {
           request.write(data);
           request.close();
-        }
-      );
-      client.close();
+      });
     };
 
-  ClientRequestHandler(url) {
-    encode = logToJson;
-    send = _sendToUrlFactory(url);
-  }
+  ClientRequestHandler(url) : this.config(logToJson, _sendToUrlFactory(url));
 
   ClientRequestHandler.config(String this.encode(Map), Future this.send(String));
 
