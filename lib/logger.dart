@@ -15,25 +15,28 @@ String logToJson(Map log) => JSON.encode(log,
     });
 
 class Logger {
-  static final String INFO = 'info';
-  static final String WARNING = 'warning';
-  static final String FINE = 'fine';
-  static final String FINER = 'finer';
-  static final String FINEST = 'finest';
 
-  var source;
+  static const int FINEST = 300;
+  static const int FINER = 400;
+  static const int FINE = 500;
+  static const int CONFIG = 700;
+  static const int INFO = 800;
+  static const int WARNING = 900;
+  static const int SEVERE = 1000;
+  static const int SHOUT = 1200;
+
+  final source;
   Function getMetaData;
-  StreamController streamController;
+  static StreamController _streamController = new StreamController.broadcast();
 
-  Logger(source, {Map this.getMetaData()}) {
-    streamController = new StreamController();
-  }
-  log(String level, String event, {dynamic data, error, stackTrace}) {
-    streamController.add({
+  Logger(this.source, {Map this.getMetaData()});
+
+  log(int level, String event, {dynamic data, error, stackTrace}) {
+    _streamController.add({
       'level':level,
       'source':source,
       'event':event,
-      'meta':getMetaData(),
+      'meta':getMetaData != null ? getMetaData() : null,
       'timestamp': new DateTime.now().millisecondsSinceEpoch,
       'data':data,
       'error':error,
@@ -41,10 +44,34 @@ class Logger {
     });
   }
 
+  info(String event, {dynamic data, error, stackTrace})
+    => log(INFO, event, data:data, error:error, stackTrace:stackTrace);
+
+  warning(String event, {dynamic data, error, stackTrace})
+    => log(WARNING, event, data:data, error:error, stackTrace:stackTrace);
+
+  severe(String event, {dynamic data, error, stackTrace})
+    => log(SEVERE, event, data:data, error:error, stackTrace:stackTrace);
+
+  shout(String event, {dynamic data, error, stackTrace})
+    => log(SHOUT, event, data:data, error:error, stackTrace:stackTrace);
+
+  config(String event, {dynamic data, error, stackTrace})
+    => log(CONFIG, event, data:data, error:error, stackTrace:stackTrace);
+
+  fine(String event, {dynamic data, error, stackTrace})
+    => log(FINE, event, data:data, error:error, stackTrace:stackTrace);
+
+  finer(String event, {dynamic data, error, stackTrace})
+    => log(FINER, event, data:data, error:error, stackTrace:stackTrace);
+
+  finest(String event, {dynamic data, error, stackTrace})
+    => log(FINEST, event, data:data, error:error, stackTrace:stackTrace);
+
   /**
    * {
    *   'level':, 'source':, 'event':, 'meta': , 'timestamp':, 'data':, 'error':, 'stackTrace':
    * }
    */
-  Stream<Map> get onRecord => streamController.stream;
+  static Stream<Map> get onRecord => _streamController.stream;
 }
