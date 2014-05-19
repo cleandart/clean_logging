@@ -8,14 +8,23 @@ import 'package:mongo_dart/mongo_dart.dart';
 class MongoLogger {
   HttpServer httpServer;
   Db mongodb;
-  static String collectionName = 'logs';
+  static const String COLLECTION_NAME = 'logs';
 
-  static _createIndexes(db, List<String> keys) =>
-    db.createIndex(collectionName, keys: new Map.fromIterable(keys, value: (v) => 1));
+  static Future _createIndexes(Db mongodb) {
+    var indexes = [
+      {'level': 1, 'timestamp': 1},
+      {'timestamp': 1},
+      {'source': 1, 'timestamp':1},
+      {'source': 1, 'level': 1},
+      {'event': 1, 'timestamp': 1},
+    ];
+    return Future.wait(indexes.map((i) =>
+        mongodb.ensureIndex(COLLECTION_NAME, keys: i)));
+  }
 
   MongoLogger.config(this.httpServer, this.mongodb);
 
-  _insertLog(Map log) => mongodb.collection(collectionName).insert(log);
+  _insertLog(Map log) => mongodb.collection(COLLECTION_NAME).insert(log);
 
   _handleRequest(request) {
     HttpBodyHandler.processRequest(request).then((body) {
@@ -41,7 +50,7 @@ class MongoLogger {
   static Future<MongoLogger> bind(host, port, connectionString) {
     var mongodb = new Db(connectionString);
     return mongodb.open()
-      .then((_) => _createIndexes(mongodb, ['event','timestamp','level','name']))
+      .then((_) => _createIndexes(mongodb))
       .then((_) => HttpServer.bind(host,port))
       .then((server) => new MongoLogger.config(server, mongodb)..start());
     }
