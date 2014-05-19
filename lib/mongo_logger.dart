@@ -25,21 +25,21 @@ class MongoLogger {
       .then((server) {
         server.listen((request) {
           HttpBodyHandler.processRequest(request).then((body) {
-            print('TYPE: ${body.type}');
-            print('BODY: ${body.body}');
-            if (body.type != "json") {
+            request.response.headers.add("Access-Control-Allow-Origin", "*");
+            request.response.headers.add("Access-Control-Allow-Methods", "POST, OPTIONS");
+            if (body.request.method == "OPTIONS") {
+              // For cross origin request
+              request.response.headers.add("Access-Control-Allow-Headers", "Content-Type");
+            } else if (body.type != "json") {
               request.response.statusCode = HttpStatus.BAD_REQUEST;
-              request.response.close();
             } else {
               Map log = body.body;
               mongodb.collection(collectionName).insert(log);
               request.response.statusCode = HttpStatus.OK;
               request.response.write({"result":"OK"});
-              request.response.close();
             }
+            return request.response.close();
           });
-          request.response.headers.add("Access-Control-Allow-Origin", "*");
-          request.response.headers.add("Access-Control-Allow-Methods", "POST");
 
         });
         return new MongoLogger.config(server, mongodb, logToJson);

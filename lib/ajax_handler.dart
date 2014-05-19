@@ -10,13 +10,9 @@ class AjaxHandler {
   final Function _encode;
 
   static _sendToUrlFactory(url) =>
-      (String data) {
-          HttpRequest req = new HttpRequest();
-          req.open("POST", url);
-          req.setRequestHeader('Content-Type', 'application/json');
-          req.setRequestHeader('User-Agent', 'random');
-          req.send(data);
-      };
+      (String data) => HttpRequest.request(url, method:"POST",
+            requestHeaders:{"Content-Type":"application/json"}, sendData:data);
+
 
   AjaxHandler(url) : this.config(logToJson, _sendToUrlFactory(url));
 

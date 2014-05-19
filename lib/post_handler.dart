@@ -13,7 +13,8 @@ class ClientRequestHandler {
     HttpClient client = new HttpClient();
     return (String data) {
       client.postUrl(Uri.parse(url)).then((request) {
-          request.headers.contentType = new ContentType('application', 'json', charset: 'utf-8');
+          var ctype = new ContentType('application', 'json', charset: 'utf-8');
+          request.headers.contentType = ctype;
           request.write(data);
           request.close();
         }
