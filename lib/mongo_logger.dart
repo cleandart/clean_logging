@@ -8,7 +8,7 @@ import 'package:mongo_dart/mongo_dart.dart';
 class MongoLogger {
   HttpServer httpServer;
   Db mongodb;
-  static String collectionName = 'logs';
+  static const String collectionName = 'logs';
 
   static _createIndexes(db, List<String> keys) =>
     db.createIndex(collectionName, keys: new Map.fromIterable(keys, value: (v) => 1));
