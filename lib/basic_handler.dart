@@ -3,7 +3,7 @@ import 'package:clean_logging/logger.dart' as cL;
 import 'package:logging/logging.dart' as l;
 
 class PrintHandler {
-  handleData(data) => print('$data');
+  static handleData(data) => print('$data');
 }
 
 class LoggingToClean {

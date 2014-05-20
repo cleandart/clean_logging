@@ -16,6 +16,7 @@ String logToJson(Map log) => JSON.encode(log,
 
 class Logger {
 
+  static const int ALL = 0;
   static const int FINEST = 300;
   static const int FINER = 400;
   static const int FINE = 500;
@@ -24,24 +25,29 @@ class Logger {
   static const int WARNING = 900;
   static const int SEVERE = 1000;
   static const int SHOUT = 1200;
+  static const int OFF = 2000;
 
   final source;
   Function getMetaData;
+  int logLevel = null;
+  Logger _parent;
   static StreamController _streamController = new StreamController.broadcast();
 
-  Logger(this.source, {Map this.getMetaData()});
+  shouldLog(level) => logLevel == null ? _parent.shouldLog(level) : logLevel <= level;
 
   log(int level, String event, {dynamic data, error, stackTrace}) {
-    _streamController.add({
-      'level':level,
-      'source':source,
-      'event':event,
-      'meta':getMetaData != null ? getMetaData() : null,
-      'timestamp': new DateTime.now().millisecondsSinceEpoch,
-      'data':data,
-      'error':error,
-      'stackTrace':stackTrace
-    });
+    if (shouldLog(level)) {
+      _streamController.add({
+        'level':level,
+        'source':source,
+        'event':event,
+        'meta':getMetaData != null ? getMetaData() : null,
+        'timestamp': new DateTime.now().millisecondsSinceEpoch,
+        'data':data,
+        'error':error,
+        'stackTrace':stackTrace
+      });
+    }
   }
 
   info(String event, {dynamic data, error, stackTrace})
@@ -74,4 +80,40 @@ class Logger {
    * }
    */
   static Stream<Map> get onRecord => _streamController.stream;
+
+  /** 
+   * All [Logger]s in the system.
+   */
+  static final Map<String, Logger> _loggers = {};
+
+  /** Root logger. */
+  static Logger ROOT = new Logger('')..logLevel = Logger.WARNING;
+  /**
+     * Singleton constructor. Calling `new Logger(name)` will return the same
+     * actual instance whenever it is called with the same string name.
+     */
+  factory Logger(String source, {Map getMetaData()}) {
+    return _loggers.putIfAbsent(source, () => new Logger._named(source));
+  }
+
+  factory Logger._named(String source) {
+    if (source.startsWith('.')) {
+      throw new ArgumentError("name shouldn't start with a '.'");
+    }
+    // Split hierarchical names (separated with '.').
+    int dot = source.lastIndexOf('.');
+    Logger parent = null;
+    String thisName;
+    if (dot == -1) {
+      if (source != '') parent = new Logger('');
+      thisName = source;
+    } else {
+      parent = new Logger(source.substring(0, dot));
+      thisName = source.substring(dot + 1);
+    }
+    return new Logger._internal(thisName, parent);
+  }
+
+  Logger._internal(this.source, this._parent);
+
 }
