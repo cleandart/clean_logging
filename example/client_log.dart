@@ -1,6 +1,6 @@
 import 'package:clean_logging/logger.dart';
 import 'package:clean_logging/ajax_handler.dart';
-import 'package:clean_logging/print_handler.dart';
+import 'package:clean_logging/basic_handler.dart';
 
 main() {
   getMetaData() =>
