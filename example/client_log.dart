@@ -13,7 +13,7 @@ main() {
 
   Logger logger = new Logger('logger1', getMetaData: getMetaData);
   Logger.onRecord.listen(new AjaxHandler(url).handleData);
-  Logger.onRecord.listen(new PrintHandler().handleData);
+  Logger.onRecord.listen(PrintHandler.handleData);
 
   for (int i = 0; i < 16; i++) {
     logger.warning("event number: ${i*100}", data: {"number": i});
