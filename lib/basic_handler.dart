@@ -1,4 +1,4 @@
-library clean_logging.print_handler;
+library clean_logging.basic_handler;
 import 'package:clean_logging/logger.dart' as cL;
 import 'package:logging/logging.dart' as l;
 
@@ -6,21 +6,21 @@ class PrintHandler {
   handleData(data) => print('$data');
 }
 
-class LogsHandler {
+class LoggingToClean {
 
   cL.Logger logger;
 
-  LogsHandler(this.logger);
+  LoggingToClean(this.logger);
 
   handleLog(l.LogRecord log) =>
       logger.log(log.level.value, log.message, error:log.error, stackTrace:log.stackTrace);
 }
 
-class MongoLogsHandler {
+class CleanToLogging {
 
   l.Logger logger;
 
-  MongoLogsHandler(this.logger);
+  CleanToLogging(this.logger);
 
   l.Level _getLogLevel(int level) {
     switch (level) {
