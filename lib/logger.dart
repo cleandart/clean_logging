@@ -81,11 +81,10 @@ class Logger {
    */
   static Stream<Map> get onRecord => _streamController.stream;
 
-  /** All [Logger]s in the system.
-   *  Contains initialized root logger */
-  static final Map<String, Logger> _loggers = <String, Logger>{
-      "":new Logger._internal("", null)..logLevel = Logger.WARNING
-  };
+  /** 
+   * All [Logger]s in the system.
+   */
+  static final Map<String, Logger> _loggers = {};
 
   /** Root logger. */
   static Logger ROOT = new Logger('')..logLevel = Logger.WARNING;
