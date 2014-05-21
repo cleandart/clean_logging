@@ -97,7 +97,7 @@ class Logger {
    * Creates root logger with logLevel set if not created.
    */
   factory Logger(String source, {Map getMetaData()}) {
-    return _loggers.putIfAbsent(source, source.isEmpty ? _createRootLogger : () => new Logger._named(source));
+    return _loggers.putIfAbsent(source, source == "" ? _createRootLogger : () => new Logger._named(source));
   }
 
   factory Logger._named(String source) {
