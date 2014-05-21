@@ -81,19 +81,23 @@ class Logger {
    */
   static Stream<Map> get onRecord => _streamController.stream;
 
-  /** 
+  /**
    * All [Logger]s in the system.
    */
   static final Map<String, Logger> _loggers = {};
 
+  static _createRootLogger() =>
+    new Logger._internal("", null)..logLevel = Logger.WARNING;
+
   /** Root logger. */
-  static Logger ROOT = new Logger('')..logLevel = Logger.WARNING;
+  static Logger get ROOT => new Logger('');
   /**
-     * Singleton constructor. Calling `new Logger(name)` will return the same
-     * actual instance whenever it is called with the same string name.
-     */
+   * Singleton constructor. Calling `new Logger(name)` will return the same
+   * actual instance whenever it is called with the same string name.
+   * Creates root logger with logLevel set if not created.
+   */
   factory Logger(String source, {Map getMetaData()}) {
-    return _loggers.putIfAbsent(source, () => new Logger._named(source));
+    return _loggers.putIfAbsent(source, source.isEmpty ? _createRootLogger : () => new Logger._named(source));
   }
 
   factory Logger._named(String source) {
