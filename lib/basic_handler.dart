@@ -13,7 +13,8 @@ class LoggingToClean {
   LoggingToClean(this.logger);
 
   handleLog(l.LogRecord log) =>
-      logger.log(log.level.value, log.message, error:log.error, stackTrace:log.stackTrace);
+      logger.log(new cL.Level(log.level.name,log.level.value), log.message,
+          error:log.error, stackTrace:log.stackTrace);
 }
 
 class CleanToLogging {
@@ -36,6 +37,6 @@ class CleanToLogging {
     }
   }
 
-  handleLog(Map log) => logger.log(_getLogLevel(log['level']), log.toString(),
+  handleLog(Map log) => logger.log(new l.Level(log['level'].name,log['level'].value), log.toString(),
       log['error'],log['stackTrace']);
 }
