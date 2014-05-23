@@ -77,7 +77,8 @@ class Logger {
   Function getMetaData;
   Level logLevel = null;
   Logger _parent;
-  static StreamController _streamController = new StreamController.broadcast();
+  static StreamController _streamController =
+      new StreamController.broadcast(sync: true);
 
   shouldLog(level) => logLevel == null ? _parent.shouldLog(level) : logLevel <= level;
 
