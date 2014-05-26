@@ -3,7 +3,7 @@ library clean_logging.logger;
 import 'dart:async';
 import 'dart:convert';
 
-String logToJson(Map log) => JSON.encode(log,
+String logsToJson(log) => JSON.encode(log,
     toEncodable: (dynamic o){
       var res;
       try {
