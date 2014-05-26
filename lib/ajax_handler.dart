@@ -9,7 +9,8 @@ class AjaxHandler extends HttpHandler {
 
   static _sendToUrlFactory(url) =>
       (String data) => HttpRequest.request(url, method:"POST",
-            requestHeaders:{"Content-Type":"application/json"}, sendData:data);
+            requestHeaders:{"Content-Type":"application/json"}, sendData:data)
+            .catchError((e,s) => print("Error occured ${e}, ${s}"));
 
 
   AjaxHandler(url) : this.config(logsToJson, _sendToUrlFactory(url));

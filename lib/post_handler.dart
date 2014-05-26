@@ -15,7 +15,7 @@ class ClientRequestHandler extends HttpHandler {
           request.headers.contentType = ctype;
           request.write(data);
           request.close();
-        }
+        }, onError: (e,s) => print("Error occured: ${e}, ${s}")
       );
     };
   }
