@@ -13,7 +13,7 @@ class AjaxHandler extends HttpHandler {
             .catchError((e,s) => print("Error occured ${e}, ${s}"));
 
 
-  AjaxHandler(url) : this.config(logsToJson, _sendToUrlFactory(url));
+  AjaxHandler(url) : this.config(logToJson, _sendToUrlFactory(url));
 
   AjaxHandler.config(String encode(Map), Future send(String)):super.config(encode,send);
 }

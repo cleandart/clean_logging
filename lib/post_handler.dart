@@ -19,7 +19,7 @@ class ClientRequestHandler extends HttpHandler {
       );
     };
   }
-  ClientRequestHandler(url):this.config(logsToJson, _sendToUrlFactory(url));
+  ClientRequestHandler(url):this.config(logToJson, _sendToUrlFactory(url));
 
   ClientRequestHandler.config(String encode(Map), Future send(String)): super.config(encode, send);
 }
