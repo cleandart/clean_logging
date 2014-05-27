@@ -24,7 +24,8 @@ class MongoLogger {
 
   MongoLogger.config(this.httpServer, this.mongodb);
 
-  _insertLog(Map log) => mongodb.collection(COLLECTION_NAME).insert(log);
+  _insertLogs(List<Map> logs) => mongodb.collection(COLLECTION_NAME).insertAll(logs)
+      .catchError((e,s) => print("Error occured while inserting to database: ${e}, ${s}"));
 
   _handleRequest(request) {
     HttpBodyHandler.processRequest(request).then((body) {
@@ -36,7 +37,7 @@ class MongoLogger {
       } else if (body.type != "json") {
         request.response.statusCode = HttpStatus.BAD_REQUEST;
       } else {
-        _insertLog(body.body);
+        _insertLogs(body.body);
         request.response.statusCode = HttpStatus.OK;
         request.response.write({"result":"OK"});
       }

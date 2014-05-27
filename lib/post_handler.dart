@@ -3,28 +3,23 @@ library clean_logging.post_handler.dart;
 import 'dart:io';
 import 'logger.dart';
 import 'dart:async';
+import 'package:clean_logging/http_handler.dart';
 
-class ClientRequestHandler {
-
-  final Function send;
-  final Function encode;
+class ClientRequestHandler extends HttpHandler {
 
   static _sendToUrlFactory(url) {
     HttpClient client = new HttpClient();
     return (String data) {
-      client.postUrl(Uri.parse(url)).then((request) {
+      return client.postUrl(Uri.parse(url)).then((request) {
           var ctype = new ContentType('application', 'json', charset: 'utf-8');
           request.headers.contentType = ctype;
           request.write(data);
           request.close();
-        }
+        }, onError: (e,s) => print("Error occured: ${e}, ${s}")
       );
     };
   }
   ClientRequestHandler(url):this.config(logToJson, _sendToUrlFactory(url));
 
-  ClientRequestHandler.config(String this.encode(Map), Future this.send(String));
-
-  handleData(data) => send(encode(data));
-
+  ClientRequestHandler.config(String encode(Map), Future send(String)): super.config(encode, send);
 }
