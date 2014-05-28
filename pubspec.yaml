@@ -1,5 +1,5 @@
 name: clean_logging
-version: 0.3.2
+version: 0.3.3
 author: Clean Team <clean@vacuumlabs.com>
 description: Structured logging library for Dart.
 homepage: https://github.com/cleandart/clean_logging
