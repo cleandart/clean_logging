@@ -24,7 +24,7 @@ class MongoLogger {
 
   MongoLogger.config(this.httpServer, this.mongodb);
 
-  _insertLogs(List<Map> logs) => mongodb.collection(COLLECTION_NAME).insertAll(logs)
+  _insertLogs(dynamic logs) => mongodb.collection(COLLECTION_NAME).insertAll(logs is List ? logs : [logs])
       .catchError((e,s) => print("Error occured while inserting to database: ${e}, ${s}"));
 
   _handleRequest(request) {
