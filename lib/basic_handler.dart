@@ -1,9 +1,14 @@
 library clean_logging.basic_handler;
 import 'package:clean_logging/logger.dart' as cL;
 import 'package:logging/logging.dart' as l;
+import 'dart:convert';
 
 class PrintHandler {
   static handleData(data) => print('$data');
+}
+
+class JsonHandler {
+  static handleData(data) => print("${JSON.encode(data)}, ");
 }
 
 class LoggingToClean {
