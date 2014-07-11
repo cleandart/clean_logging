@@ -74,7 +74,6 @@ class Level implements Comparable<Level> {
 class Logger {
 
   final source;
-  Function getMetaData;
   Level logLevel = null;
   Logger _parent;
   static StreamController _streamController =
@@ -128,6 +127,8 @@ class Logger {
    */
   static Stream<Map> get onRecord => _streamController.stream;
 
+  static Function getMetaData;
+
   /**
    * All [Logger]s in the system.
    */
@@ -143,7 +144,7 @@ class Logger {
    * actual instance whenever it is called with the same string name.
    * Creates root logger with logLevel set if not created.
    */
-  factory Logger(String source, {Map getMetaData()}) {
+  factory Logger(String source) {
     return _loggers.putIfAbsent(source, source == "" ? _createRootLogger : () => new Logger._named(source));
   }
 

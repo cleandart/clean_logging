@@ -6,6 +6,10 @@ class PrintHandler {
   static handleData(data) => print('$data');
 }
 
+class JsonHandler {
+  static handleData(data) => print("${cL.logToJson(data)}, ");
+}
+
 class LoggingToClean {
 
   cL.Logger logger;
