@@ -73,6 +73,7 @@ class Level implements Comparable<Level> {
 
 class Logger {
 
+  final fullSource;
   final source;
   Level logLevel = null;
   Logger _parent;
@@ -85,6 +86,7 @@ class Logger {
     if (shouldLog(level)) {
       _streamController.add({
         'level':level,
+        'fullSource': fullSource,
         'source':source,
         'event':event,
         'meta':getMetaData != null ? getMetaData() : null,
@@ -135,7 +137,7 @@ class Logger {
   static final Map<String, Logger> _loggers = {};
 
   static _createRootLogger() =>
-    new Logger._internal("", null)..logLevel = Level.WARNING;
+    new Logger._internal("", "", null)..logLevel = Level.WARNING;
 
   /** Root logger. */
   static Logger get ROOT => new Logger('');
@@ -163,9 +165,9 @@ class Logger {
       parent = new Logger(source.substring(0, dot));
       thisName = source.substring(dot + 1);
     }
-    return new Logger._internal(thisName, parent);
+    return new Logger._internal(source, thisName, parent);
   }
 
-  Logger._internal(this.source, this._parent);
+  Logger._internal(this.fullSource, this.source, this._parent);
 
 }
