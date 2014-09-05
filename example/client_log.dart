@@ -11,7 +11,8 @@ main() {
 
   var url = "http://127.0.0.1:8080";
 
-  Logger logger = new Logger('logger1', getMetaData: getMetaData);
+  Logger logger = new Logger('logger1');
+  Logger.getMetaData = getMetaData;
   Logger.onRecord.listen(new AjaxHandler(url).handleData);
   Logger.onRecord.listen(PrintHandler.handleData);
 
