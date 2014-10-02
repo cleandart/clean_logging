@@ -3,7 +3,7 @@ library clean_logging.test_logger;
 import 'package:unittest/unittest.dart';
 import 'package:clean_logging/logger.dart';
 
-Logger l = new Logger('pokus');
+Logger l = new Logger('logger');
 
 void main() {
   test('Logging inside logging does not end in infinite loop.', () {
