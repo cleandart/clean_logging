@@ -84,17 +84,24 @@ class Logger {
 
   log(Level level, String event, {dynamic data, error, stackTrace}) {
     if (shouldLog(level)) {
-      _streamController.add({
-        'level':level,
-        'fullSource': fullSource,
-        'source':source,
-        'event':event,
-        'meta':getMetaData != null ? getMetaData() : null,
-        'timestamp': new DateTime.now().millisecondsSinceEpoch,
-        'data':data,
-        'error':error,
-        'stackTrace':stackTrace
-      });
+      var logRec = {'level':level,
+                    'fullSource': fullSource,
+                    'source':source,
+                    'event':event,
+                    'meta':getMetaData != null ? getMetaData() : null,
+                    'timestamp': new DateTime.now().millisecondsSinceEpoch,
+                    'data':data,
+                    'error':error,
+                    'stackTrace':stackTrace
+                  };
+      if (_locked) {
+        print('Error: Someone is trying to log during logging. Log record:\n'
+              '${logRec.toString()}');
+      } else {
+        _locked = true;
+        _streamController.add(logRec);
+        _locked = false;
+      }
     }
   }
 
@@ -128,6 +135,8 @@ class Logger {
    * }
    */
   static Stream<Map> get onRecord => _streamController.stream;
+
+  static bool _locked = false;
 
   static Function getMetaData;
 

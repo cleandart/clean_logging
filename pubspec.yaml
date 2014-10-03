@@ -1,5 +1,5 @@
 name: clean_logging
-version: 0.4.1
+version: 0.4.2
 author: Clean Team <clean@vacuumlabs.com>
 description: Structured logging library for Dart.
 homepage: https://github.com/cleandart/clean_logging
@@ -12,3 +12,5 @@ dependencies:
   http_server: '>=0.9.2 <0.10.0'
   logging: '>=0.9.0 <0.10.0'
   mongo_dart: '>=0.1.39 <0.2.0'
+dev_dependencies:
+  unittest: '>=0.9.3'
