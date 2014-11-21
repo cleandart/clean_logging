@@ -5,6 +5,10 @@ import 'dart:io';
 import 'package:http_server/http_server.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
+/**
+ * Inserts given logs into Mongo database. Logs should be sent using [ClientRequestHandler] serverside
+ * or [AjaxHandler] clientside.
+ */
 class MongoLogger {
   HttpServer httpServer;
   Db mongodb;
@@ -45,9 +49,16 @@ class MongoLogger {
     });
   }
 
+  /// Starts the listener
   start() =>
     httpServer.listen((request) => _handleRequest(request));
 
+  /**
+   * Creates a MongoLogger instance listening on given [host] and [port].
+   * MongoLogger connects to database using [connectionString] and inserts received
+   * logs into collection specified in [COLLECTION_NAME].
+   *
+   */
   static Future<MongoLogger> bind(host, port, connectionString) {
     var mongodb = new Db(connectionString);
     return mongodb.open()

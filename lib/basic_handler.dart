@@ -10,17 +10,26 @@ class JsonHandler {
   static handleData(data) => print("${cL.logToJson(data)}, ");
 }
 
+/**
+ * Compatibility class for Logger in package logging. Logs from the other Logger
+ * are logged by this logger.
+ */
 class LoggingToClean {
 
   cL.Logger logger;
 
   LoggingToClean(this.logger);
 
+  /// Logs every log from Logger in package logging by this Logger
   handleLog(l.LogRecord log) =>
       logger.log(new cL.Level(log.level.name,log.level.value), log.message,
           error:log.error, stackTrace:log.stackTrace);
 }
 
+/**
+ * Compatibility class for Logger in package logging. Logs from this logger
+ * are logged by the Logger in package logging
+ */
 class CleanToLogging {
 
   l.Logger logger;

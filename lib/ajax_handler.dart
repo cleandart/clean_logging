@@ -5,6 +5,9 @@ import 'dart:async';
 import 'dart:html';
 import 'package:clean_logging/http_handler.dart';
 
+/**
+ * Client-side handler for MongoLogger. .handleData(data) encodes and sends the data to the specified url.
+ */
 class AjaxHandler extends HttpHandler {
 
   static _sendToUrlFactory(url) =>
@@ -15,5 +18,5 @@ class AjaxHandler extends HttpHandler {
 
   AjaxHandler(url) : this.config(logToJson, _sendToUrlFactory(url));
 
-  AjaxHandler.config(String encode(Map), Future send(String)):super.config(encode,send);
+  AjaxHandler.config(String encode(Map m), Future send(String s)):super.config(encode,send);
 }
