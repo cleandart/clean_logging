@@ -5,6 +5,10 @@ import 'logger.dart';
 import 'dart:async';
 import 'package:clean_logging/http_handler.dart';
 
+/**
+ * Server side handler for MongoLogger. .handleData(data) sends the data to the specified
+ * url to another server.
+ */
 class ClientRequestHandler extends HttpHandler {
 
   static _sendToUrlFactory(url) {

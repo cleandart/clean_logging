@@ -3,6 +3,10 @@ library clean_logging.logger;
 import 'dart:async';
 import 'dart:convert';
 
+/**
+ * Recursively encodes the object to JSON - if some object does not implement .toJson(),
+ * .toString() is used.
+ */
 String logToJson(log) => JSON.encode(log,
     toEncodable: (dynamic o){
       var res;
@@ -14,6 +18,9 @@ String logToJson(log) => JSON.encode(log,
       return res;
     });
 
+/**
+ * Log level used to determine the granularity of a log.
+ */
 class Level implements Comparable<Level> {
 
   final String name;
@@ -71,17 +78,42 @@ class Level implements Comparable<Level> {
 
 }
 
+/**
+ * Class for logging objects. Similar to logger in package logging, but instead of logging
+ * only String messages, [Logger] allows to log any data. Logging hierarchy can be expressed
+ * while constructing a logger with name separated by '.', which then corresponds to a path from names
+ * in hierachy tree.
+ *
+ * Every logger has it's logLevel, which decides whether to log the given log or not.
+ * If a level is not specified, parent's level is considered.
+ *
+ * If data is to be logged, it is appended some additional data and pushed to a static stream.
+ * If there is any action to be taken after data is logged, there's only needed to listen on this
+ * static stream.
+ */
 class Logger {
 
+  /// Full name of the Logger (with hierarchy)
   final fullSource;
+  /// Name of the Logger (without hierarchy)
   final source;
+  /// Filters out logs with smaller level
   Level logLevel = null;
   Logger _parent;
+
+  /// Static stream, where every log is pushed
   static StreamController _streamController =
       new StreamController.broadcast(sync: true);
 
+  /// Based on [logLevel], decides whether a log with [level] should be logged
   shouldLog(level) => logLevel == null ? _parent.shouldLog(level) : logLevel <= level;
 
+  /**
+   * If it should log the given [level], it pushes a Map with given data to the static stream
+   * [onRecord]. Additionally, it adds a timestamp and if static [getMetaData] is specified,
+   * it adds the result of this funciton (it may be some data that has to be recalculated for every log,
+   * e.g. number of logs).
+   */
   log(Level level, String event, {dynamic data, error, stackTrace}) {
     if (shouldLog(level)) {
       var logRec = {'level':level,
@@ -105,39 +137,62 @@ class Logger {
     }
   }
 
+  /// Logs data with Level.INFO - compatibility with Logger in package logging
   info(String event, {dynamic data, error, stackTrace})
     => log(Level.INFO, event, data:data, error:error, stackTrace:stackTrace);
 
+  /// Logs data with Level.WARNING - compatibility with Logger in package logging
   warning(String event, {dynamic data, error, stackTrace})
     => log(Level.WARNING, event, data:data, error:error, stackTrace:stackTrace);
 
+  /// Logs data with Level.SEVERE - compatibility with Logger in package logging
   severe(String event, {dynamic data, error, stackTrace})
     => log(Level.SEVERE, event, data:data, error:error, stackTrace:stackTrace);
 
+  /// Logs data with Level.SHOUT - compatibility with Logger in package logging
   shout(String event, {dynamic data, error, stackTrace})
     => log(Level.SHOUT, event, data:data, error:error, stackTrace:stackTrace);
 
+  /// Logs data with Level.CONFIG - compatibility with Logger in package logging
   config(String event, {dynamic data, error, stackTrace})
     => log(Level.CONFIG, event, data:data, error:error, stackTrace:stackTrace);
 
+  /// Logs data with Level.FINE - compatibility with Logger in package logging
   fine(String event, {dynamic data, error, stackTrace})
     => log(Level.FINE, event, data:data, error:error, stackTrace:stackTrace);
 
+  /// Logs data with Level.FINER - compatibility with Logger in package logging
   finer(String event, {dynamic data, error, stackTrace})
     => log(Level.FINER, event, data:data, error:error, stackTrace:stackTrace);
 
+  /// Logs data with Level.FINEST - compatibility with Logger in package logging
   finest(String event, {dynamic data, error, stackTrace})
     => log(Level.FINEST, event, data:data, error:error, stackTrace:stackTrace);
 
   /**
+   * All logs are pushed into this stream, every element in this stream is in
+   * the following form:
+   *
    * {
-   *   'level':, 'source':, 'event':, 'meta': , 'timestamp':, 'data':, 'error':, 'stackTrace':
+   *   'level': Level,
+   *   'fullSource': String,
+   *   'source': String,
+   *   'event': String,
+   *   'meta': dynamic,
+   *   'timestamp': int,
+   *   'data': dynamic,
+   *   'error': dynamic,
+   *   'stackTrace': dynamic,
    * }
    */
   static Stream<Map> get onRecord => _streamController.stream;
 
   static bool _locked = false;
 
+  /**
+   * This function is recalculated with every log, and it's result is pushed into
+   * the stream. The function should not take any arguments.
+   */
   static Function getMetaData;
 
   /**

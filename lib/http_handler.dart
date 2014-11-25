@@ -2,6 +2,10 @@ library clean_logging.http_handler.dart;
 
 import 'dart:async';
 
+/**
+ * Class supporting batch sending, all other handler which send the data elsewhere
+ * extend this class.
+ */
 abstract class HttpHandler {
 
   final Function send;
@@ -9,7 +13,7 @@ abstract class HttpHandler {
   bool _running = false;
   final _queue = [];
 
-  HttpHandler.config(String this.encode(Map), Future this.send(String));
+  HttpHandler.config(String this.encode(Map m), Future this.send(String s));
 
   handleData(data) {
     _queue.add(data);
